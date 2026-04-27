@@ -10,5 +10,5 @@ abstract class INetworkClient {
 
   Future<Result<T>> put<T>(String path, {Object? body});
 
-  Future<Result<T>> delete<T>(String path);
+  Future<Result<void>> delete(String path);
 }
