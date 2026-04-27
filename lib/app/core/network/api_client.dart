@@ -20,7 +20,7 @@ class ApiClient implements INetworkClient {
   @override
   Future<Result<void>> delete(String path) async {
     try {
-      final uri = Uri.parse(path);
+      final uri = Uri.parse('$baseUrl$path');
       final response = await _client.delete(uri, headers: _headers);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -96,15 +96,16 @@ class ApiClient implements INetworkClient {
         body: encondebody,
         headers: _headers,
       );
-      final decodeBody = jsonDecode(response.body);
-      T dadoFinal;
-      if (fromJson != null) {
-        dadoFinal = fromJson(decodeBody);
-      } else {
-        dadoFinal = decodeBody as T;
-      }
 
-      if (response.statusCode >= 200 && response.statusCode <= 300) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decodeBody = jsonDecode(response.body);
+        T dadoFinal;
+        if (fromJson != null) {
+          dadoFinal = fromJson(decodeBody);
+        } else {
+          dadoFinal = decodeBody as T;
+        }
+
         return Success<T>(data: dadoFinal, statusCode: response.statusCode);
       }
       return Failure(
@@ -134,15 +135,16 @@ class ApiClient implements INetworkClient {
         body: encondebody,
         headers: _headers,
       );
-      final decodeBody = jsonDecode(response.body);
-      T dadoFinal;
-      if (fromJson != null) {
-        dadoFinal = fromJson(decodeBody);
-      } else {
-        dadoFinal = decodeBody as T;
-      }
 
-      if (response.statusCode >= 200 && response.statusCode <= 300) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decodeBody = jsonDecode(response.body);
+        T dadoFinal;
+        if (fromJson != null) {
+          dadoFinal = fromJson(decodeBody);
+        } else {
+          dadoFinal = decodeBody as T;
+        }
+
         return Success<T>(data: dadoFinal, statusCode: response.statusCode);
       }
       return Failure(
