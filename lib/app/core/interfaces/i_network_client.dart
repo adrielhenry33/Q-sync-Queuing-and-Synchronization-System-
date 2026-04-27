@@ -4,6 +4,7 @@ abstract class INetworkClient {
   Future<Result<T>> get<T>(
     String? path, {
     Map<String, dynamic>? queryParameters,
+    T Function(dynamic) fromJson,
   });
 
   Future<Result<T>> post<T>(String path, {Object? body});

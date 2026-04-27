@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:q_sync/app/core/interfaces/i_network_client.dart';
 import 'package:q_sync/app/core/network/result.dart';
@@ -30,7 +32,10 @@ class ApiClient implements INetworkClient {
         statusCode: response.statusCode,
       );
     } catch (e, st) {
-      return Failure<void>(errorMessage: 'Falha na comunicação $e', stackTrace: st);
+      return Failure<void>(
+        errorMessage: 'Falha na comunicação $e',
+        stackTrace: st,
+      );
     }
   }
 
@@ -38,9 +43,39 @@ class ApiClient implements INetworkClient {
   Future<Result<T>> get<T>(
     String? path, {
     Map<String, dynamic>? queryParameters,
-  }) {
-    // TODO: implement get
-    throw UnimplementedError();
+    T Function(dynamic)? fromJson,
+  }) async {
+    try {
+      var url = Uri.parse('$baseUrl$path');
+      if (queryParameters != null && queryParameters.isNotEmpty) {
+        final stringParams = queryParameters.map(
+          (key, value) => MapEntry(key, value.toString()),
+        );
+        url = url.replace(queryParameters: stringParams);
+      }
+
+      var response = await _client.get(url, headers: _headers);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decodeBody = jsonDecode(response.body);
+        T dadoFinal;
+
+        if (fromJson != null) {
+          dadoFinal = fromJson(decodeBody);
+        } else {
+          dadoFinal = decodeBody as T;
+        }
+        return Success<T>(data: dadoFinal, statusCode: response.statusCode);
+      }
+      return Failure<T>(
+        errorMessage: "Erro ao buscar os dados",
+        statusCode: response.statusCode,
+      );
+    } catch (e, st) {
+      return Failure<T>(
+        errorMessage: "Erro de ao conectar com o servidor $e",
+        stackTrace: st,
+      );
+    }
   }
 
   @override
