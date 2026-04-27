@@ -79,14 +79,78 @@ class ApiClient implements INetworkClient {
   }
 
   @override
-  Future<Result<T>> post<T>(String path, {Object? body}) {
-    // TODO: implement post
-    throw UnimplementedError();
+  Future<Result<T>> post<T>(
+    String path,
+    T Function(dynamic)? fromJson, {
+    Object? body,
+  }) async {
+    try {
+      final url = Uri.parse('$baseUrl$path');
+      if (body == null) {
+        return Failure<T>(errorMessage: 'Dados vazios, preencha os dados');
+      }
+      final encondebody = jsonEncode(body);
+
+      final response = await _client.post(
+        url,
+        body: encondebody,
+        headers: _headers,
+      );
+      final decodeBody = jsonDecode(response.body);
+      T dadoFinal;
+      if (fromJson != null) {
+        dadoFinal = fromJson(decodeBody);
+      } else {
+        dadoFinal = decodeBody as T;
+      }
+
+      if (response.statusCode >= 200 && response.statusCode <= 300) {
+        return Success<T>(data: dadoFinal, statusCode: response.statusCode);
+      }
+      return Failure(
+        errorMessage: 'Erro ao enviar os dados',
+        statusCode: response.statusCode,
+      );
+    } catch (e, st) {
+      return Failure<T>(errorMessage: "Erro de conexão $e", stackTrace: st);
+    }
   }
 
   @override
-  Future<Result<T>> put<T>(String path, {Object? body}) {
-    // TODO: implement put
-    throw UnimplementedError();
+  Future<Result<T>> put<T>(
+    String path,
+    T Function(dynamic)? fromJson, {
+    Object? body,
+  }) async {
+    try {
+      final url = Uri.parse('$baseUrl$path');
+      if (body == null) {
+        return Failure<T>(errorMessage: 'Dados vazios, preencha os dados');
+      }
+      final encondebody = jsonEncode(body);
+
+      final response = await _client.put(
+        url,
+        body: encondebody,
+        headers: _headers,
+      );
+      final decodeBody = jsonDecode(response.body);
+      T dadoFinal;
+      if (fromJson != null) {
+        dadoFinal = fromJson(decodeBody);
+      } else {
+        dadoFinal = decodeBody as T;
+      }
+
+      if (response.statusCode >= 200 && response.statusCode <= 300) {
+        return Success<T>(data: dadoFinal, statusCode: response.statusCode);
+      }
+      return Failure(
+        errorMessage: 'Erro ao enviar os dados',
+        statusCode: response.statusCode,
+      );
+    } catch (e, st) {
+      return Failure<T>(errorMessage: "Erro de conexão $e", stackTrace: st);
+    }
   }
 }

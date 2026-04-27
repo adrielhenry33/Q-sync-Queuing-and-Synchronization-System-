@@ -7,9 +7,17 @@ abstract class INetworkClient {
     T Function(dynamic) fromJson,
   });
 
-  Future<Result<T>> post<T>(String path, {Object? body});
+  Future<Result<T>> post<T>(
+    String path,
+    T Function(dynamic)? fromJson, {
+    Object? body,
+  });
 
-  Future<Result<T>> put<T>(String path, {Object? body});
+  Future<Result<T>> put<T>(
+    String path,
+    T Function(dynamic)? fromJson, {
+    Object? body,
+  });
 
   Future<Result<void>> delete(String path);
 }
