@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   http: ^1.6.0
   bloc: ^9.2.0
+  drift: ^2.32.1
 
 dev_dependencies:
   flutter_test:
