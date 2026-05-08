@@ -8,7 +8,7 @@ class ConnectionQueue extends Table {
 
   TextColumn get method => text()();
 
-  TextColumn get body => text()();
+  TextColumn get payload => text()();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

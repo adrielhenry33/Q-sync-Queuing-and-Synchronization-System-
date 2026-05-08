@@ -29,10 +29,11 @@ class $ConnectionQueueTable extends ConnectionQueue
   late final GeneratedColumn<String> method = GeneratedColumn<String>(
       'method', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _bodyMeta = const VerificationMeta('body');
+  static const VerificationMeta _payloadMeta =
+      const VerificationMeta('payload');
   @override
-  late final GeneratedColumn<String> body = GeneratedColumn<String>(
-      'body', aliasedName, false,
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+      'payload', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
@@ -43,7 +44,8 @@ class $ConnectionQueueTable extends ConnectionQueue
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
   @override
-  List<GeneratedColumn> get $columns => [id, endpoint, method, body, createdAt];
+  List<GeneratedColumn> get $columns =>
+      [id, endpoint, method, payload, createdAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -70,11 +72,11 @@ class $ConnectionQueueTable extends ConnectionQueue
     } else if (isInserting) {
       context.missing(_methodMeta);
     }
-    if (data.containsKey('body')) {
-      context.handle(
-          _bodyMeta, body.isAcceptableOrUnknown(data['body']!, _bodyMeta));
+    if (data.containsKey('payload')) {
+      context.handle(_payloadMeta,
+          payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta));
     } else if (isInserting) {
-      context.missing(_bodyMeta);
+      context.missing(_payloadMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -95,8 +97,8 @@ class $ConnectionQueueTable extends ConnectionQueue
           .read(DriftSqlType.string, data['${effectivePrefix}endpoint'])!,
       method: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}method'])!,
-      body: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}body'])!,
+      payload: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}payload'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
     );
@@ -113,13 +115,13 @@ class ConnectionQueueData extends DataClass
   final int id;
   final String endpoint;
   final String method;
-  final String body;
+  final String payload;
   final DateTime createdAt;
   const ConnectionQueueData(
       {required this.id,
       required this.endpoint,
       required this.method,
-      required this.body,
+      required this.payload,
       required this.createdAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -127,7 +129,7 @@ class ConnectionQueueData extends DataClass
     map['id'] = Variable<int>(id);
     map['endpoint'] = Variable<String>(endpoint);
     map['method'] = Variable<String>(method);
-    map['body'] = Variable<String>(body);
+    map['payload'] = Variable<String>(payload);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -137,7 +139,7 @@ class ConnectionQueueData extends DataClass
       id: Value(id),
       endpoint: Value(endpoint),
       method: Value(method),
-      body: Value(body),
+      payload: Value(payload),
       createdAt: Value(createdAt),
     );
   }
@@ -149,7 +151,7 @@ class ConnectionQueueData extends DataClass
       id: serializer.fromJson<int>(json['id']),
       endpoint: serializer.fromJson<String>(json['endpoint']),
       method: serializer.fromJson<String>(json['method']),
-      body: serializer.fromJson<String>(json['body']),
+      payload: serializer.fromJson<String>(json['payload']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -160,7 +162,7 @@ class ConnectionQueueData extends DataClass
       'id': serializer.toJson<int>(id),
       'endpoint': serializer.toJson<String>(endpoint),
       'method': serializer.toJson<String>(method),
-      'body': serializer.toJson<String>(body),
+      'payload': serializer.toJson<String>(payload),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -169,13 +171,13 @@ class ConnectionQueueData extends DataClass
           {int? id,
           String? endpoint,
           String? method,
-          String? body,
+          String? payload,
           DateTime? createdAt}) =>
       ConnectionQueueData(
         id: id ?? this.id,
         endpoint: endpoint ?? this.endpoint,
         method: method ?? this.method,
-        body: body ?? this.body,
+        payload: payload ?? this.payload,
         createdAt: createdAt ?? this.createdAt,
       );
   ConnectionQueueData copyWithCompanion(ConnectionQueueCompanion data) {
@@ -183,7 +185,7 @@ class ConnectionQueueData extends DataClass
       id: data.id.present ? data.id.value : this.id,
       endpoint: data.endpoint.present ? data.endpoint.value : this.endpoint,
       method: data.method.present ? data.method.value : this.method,
-      body: data.body.present ? data.body.value : this.body,
+      payload: data.payload.present ? data.payload.value : this.payload,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -194,14 +196,14 @@ class ConnectionQueueData extends DataClass
           ..write('id: $id, ')
           ..write('endpoint: $endpoint, ')
           ..write('method: $method, ')
-          ..write('body: $body, ')
+          ..write('payload: $payload, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, endpoint, method, body, createdAt);
+  int get hashCode => Object.hash(id, endpoint, method, payload, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -209,7 +211,7 @@ class ConnectionQueueData extends DataClass
           other.id == this.id &&
           other.endpoint == this.endpoint &&
           other.method == this.method &&
-          other.body == this.body &&
+          other.payload == this.payload &&
           other.createdAt == this.createdAt);
 }
 
@@ -217,36 +219,36 @@ class ConnectionQueueCompanion extends UpdateCompanion<ConnectionQueueData> {
   final Value<int> id;
   final Value<String> endpoint;
   final Value<String> method;
-  final Value<String> body;
+  final Value<String> payload;
   final Value<DateTime> createdAt;
   const ConnectionQueueCompanion({
     this.id = const Value.absent(),
     this.endpoint = const Value.absent(),
     this.method = const Value.absent(),
-    this.body = const Value.absent(),
+    this.payload = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   ConnectionQueueCompanion.insert({
     this.id = const Value.absent(),
     required String endpoint,
     required String method,
-    required String body,
+    required String payload,
     this.createdAt = const Value.absent(),
   })  : endpoint = Value(endpoint),
         method = Value(method),
-        body = Value(body);
+        payload = Value(payload);
   static Insertable<ConnectionQueueData> custom({
     Expression<int>? id,
     Expression<String>? endpoint,
     Expression<String>? method,
-    Expression<String>? body,
+    Expression<String>? payload,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (endpoint != null) 'endpoint': endpoint,
       if (method != null) 'method': method,
-      if (body != null) 'body': body,
+      if (payload != null) 'payload': payload,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -255,13 +257,13 @@ class ConnectionQueueCompanion extends UpdateCompanion<ConnectionQueueData> {
       {Value<int>? id,
       Value<String>? endpoint,
       Value<String>? method,
-      Value<String>? body,
+      Value<String>? payload,
       Value<DateTime>? createdAt}) {
     return ConnectionQueueCompanion(
       id: id ?? this.id,
       endpoint: endpoint ?? this.endpoint,
       method: method ?? this.method,
-      body: body ?? this.body,
+      payload: payload ?? this.payload,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -278,8 +280,8 @@ class ConnectionQueueCompanion extends UpdateCompanion<ConnectionQueueData> {
     if (method.present) {
       map['method'] = Variable<String>(method.value);
     }
-    if (body.present) {
-      map['body'] = Variable<String>(body.value);
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -293,7 +295,7 @@ class ConnectionQueueCompanion extends UpdateCompanion<ConnectionQueueData> {
           ..write('id: $id, ')
           ..write('endpoint: $endpoint, ')
           ..write('method: $method, ')
-          ..write('body: $body, ')
+          ..write('payload: $payload, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -305,6 +307,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ConnectionQueueTable connectionQueue =
       $ConnectionQueueTable(this);
+  late final ConnectionQueueDao connectionQueueDao =
+      ConnectionQueueDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -317,7 +321,7 @@ typedef $$ConnectionQueueTableCreateCompanionBuilder = ConnectionQueueCompanion
   Value<int> id,
   required String endpoint,
   required String method,
-  required String body,
+  required String payload,
   Value<DateTime> createdAt,
 });
 typedef $$ConnectionQueueTableUpdateCompanionBuilder = ConnectionQueueCompanion
@@ -325,7 +329,7 @@ typedef $$ConnectionQueueTableUpdateCompanionBuilder = ConnectionQueueCompanion
   Value<int> id,
   Value<String> endpoint,
   Value<String> method,
-  Value<String> body,
+  Value<String> payload,
   Value<DateTime> createdAt,
 });
 
@@ -347,8 +351,8 @@ class $$ConnectionQueueTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<String> get body => $state.composableBuilder(
-      column: $state.table.body,
+  ColumnFilters<String> get payload => $state.composableBuilder(
+      column: $state.table.payload,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -376,8 +380,8 @@ class $$ConnectionQueueTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<String> get body => $state.composableBuilder(
-      column: $state.table.body,
+  ColumnOrderings<String> get payload => $state.composableBuilder(
+      column: $state.table.payload,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -414,28 +418,28 @@ class $$ConnectionQueueTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> endpoint = const Value.absent(),
             Value<String> method = const Value.absent(),
-            Value<String> body = const Value.absent(),
+            Value<String> payload = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
           }) =>
               ConnectionQueueCompanion(
             id: id,
             endpoint: endpoint,
             method: method,
-            body: body,
+            payload: payload,
             createdAt: createdAt,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String endpoint,
             required String method,
-            required String body,
+            required String payload,
             Value<DateTime> createdAt = const Value.absent(),
           }) =>
               ConnectionQueueCompanion.insert(
             id: id,
             endpoint: endpoint,
             method: method,
-            body: body,
+            payload: payload,
             createdAt: createdAt,
           ),
           withReferenceMapper: (p0) => p0
