@@ -5,15 +5,22 @@ import 'package:q_sync/app/core/interfaces/i_network_client.dart';
 import 'package:q_sync/app/core/network/result.dart';
 
 class ApiClient implements INetworkClient {
-  ApiClient(this._client);
+  ApiClient(this._client, {this.token});
 
   final http.Client _client;
   final String _baseUrl = 'http://172.16.10.110:8080';
-  final Map<String, String> _headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Bearer token-ficticio-123456',
-  };
+  Map<String, String> get _headers {
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    if (token != null && token!.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+    return headers;
+  }
+
+  String? token;
 
   String get baseUrl => _baseUrl;
 
@@ -89,7 +96,7 @@ class ApiClient implements INetworkClient {
       if (body == null) {
         return Failure<T>(errorMessage: 'Dados vazios, preencha os dados');
       }
-      final encondebody = jsonEncode(body);
+      final encondebody = body is String ? body : jsonEncode(body);
 
       final response = await _client.post(
         url,
@@ -128,7 +135,7 @@ class ApiClient implements INetworkClient {
       if (body == null) {
         return Failure<T>(errorMessage: 'Dados vazios, preencha os dados');
       }
-      final encondebody = jsonEncode(body);
+      final encondebody = body is String ? body : jsonEncode(body);
 
       final response = await _client.put(
         url,
