@@ -10,20 +10,11 @@ class QSyncManager {
   QSyncManager(this._dao, this._client);
 
   Future<int> enQueue(String endpoint, String method, String payload) async {
-    try {
-      final entry = ConnectionQueueCompanion(
-          endpoint: Value(endpoint),
-          method: Value(method),
-          payload: Value(payload));
-      final insertResult = await _dao.insertQueueItem(entry);
-
-      if (insertResult > 0) {
-        return 1;
-      }
-      return 0;
-    } on Exception catch (e) {
-      return -1;
-    }
+    final entry = ConnectionQueueCompanion(
+        endpoint: Value(endpoint),
+        method: Value(method),
+        payload: Value(payload));
+    return await _dao.insertQueueItem(entry);
   }
 
   Future<void> processQueue() async {
