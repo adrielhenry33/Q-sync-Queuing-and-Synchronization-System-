@@ -89,7 +89,7 @@ class ApiClient implements INetworkClient {
       if (body == null) {
         return Failure<T>(errorMessage: 'Dados vazios, preencha os dados');
       }
-      final encondebody = jsonEncode(body);
+      final encondebody = body is String ? body : jsonEncode(body);
 
       final response = await _client.post(
         url,
@@ -128,7 +128,7 @@ class ApiClient implements INetworkClient {
       if (body == null) {
         return Failure<T>(errorMessage: 'Dados vazios, preencha os dados');
       }
-      final encondebody = jsonEncode(body);
+      final encondebody = body is String ? body : jsonEncode(body);
 
       final response = await _client.put(
         url,
