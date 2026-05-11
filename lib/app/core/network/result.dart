@@ -1,4 +1,7 @@
-sealed class Result<T> {}
+sealed class Result<T> {
+  final int? statusCode;
+  Result({this.statusCode});
+}
 
 class Success<T> extends Result<T> {
   final int? statusCode;
@@ -9,7 +12,7 @@ class Success<T> extends Result<T> {
 
 class Failure<T> extends Result<T> {
   final int? statusCode;
-  final String errorMessage;
+  final String? errorMessage;
   final dynamic rawBody;
   final StackTrace? stackTrace;
 
