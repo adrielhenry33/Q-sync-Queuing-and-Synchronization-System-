@@ -17,7 +17,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           emit(DashboardSucess(result.data));
           break;
         case Failure():
-          emit(DashboardError(result.errorMessage));
+          emit(DashboardError(result.errorMessage ?? 'Erro desconhecido'));
       }
     });
 
